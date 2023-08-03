@@ -26,7 +26,7 @@ createGalleryListMarkup(galleryItems);
 
 galleryList.addEventListener("click", handleClick);
 
-// Modal window via library
+// Modal window via library + close modal via Escape
 
 function handleClick(event) {
     event.preventDefault();
@@ -34,7 +34,22 @@ function handleClick(event) {
     return;
   }
     const instance = basicLightbox.create(`
-    <img src="${event.target.dataset.source}">
-`);
-    instance.show()
+    <img src="${event.target.dataset.source}">`, {
+    onShow: () => {
+        galleryList.addEventListener("keydown", handleCloseModal);
+    },
+    
+    onClose: () => {
+        galleryList.removeEventListener("keydown", handleCloseModal);
+    },
+    });
+        
+    instance.show();
+
+    function handleCloseModal(event) {
+        if (event.code === "Escape") {
+            instance.close()
+        }
+    }
+   
 };
